@@ -36,6 +36,10 @@ class PostgresAuditIntegrationTest {
             assertEquals(1, events.size());
             assertEquals("user-1", events.get(0).userId());
             assertEquals("CLOSED", events.get(0).payload().get("status"));
+            assertEquals(1, repository.findAll(null, null).size());
+            assertEquals(1, repository.findAll("user-1", "WORK_ORDER_CLOSED").size());
+            assertTrue(repository.findAll("other-user", null).isEmpty());
+            assertTrue(repository.findAll(null, "WORK_ORDER_CREATED").isEmpty());
             connection.rollback();
         }
     }

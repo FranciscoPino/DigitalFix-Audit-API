@@ -36,6 +36,8 @@ class WorkOrderEventConsumerTest {
         assertThrows(Exception.class, () -> consumer.consume(EVENT.replace("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb", "bad")));
         assertThrows(Exception.class, () -> consumer.consume(EVENT.replace("\"user-1\"", "123")));
         assertThrows(Exception.class, () -> consumer.consume(EVENT.replace("2026-01-01T10:00:00Z", "bad")));
+        assertThrows(IllegalArgumentException.class, () -> consumer.consume(EVENT.replace("\"status\":\"CLOSED\"", "\"status\":\"CREATED\"")));
+        assertThrows(IllegalArgumentException.class, () -> consumer.consume(EVENT.replace("\"eventId\"", "\"schemaVersion\":2,\"eventId\"")));
         verifyNoInteractions(repository);
     }
 }

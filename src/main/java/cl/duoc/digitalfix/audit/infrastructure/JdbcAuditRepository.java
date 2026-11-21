@@ -40,8 +40,8 @@ public class JdbcAuditRepository {
     public List<TimelineEvent> findAll(String userId, String eventType) {
         return jdbc.query("""
                 SELECT * FROM audit.timeline_events
-                WHERE (? IS NULL OR actor_external_user_id = ?)
-                  AND (? IS NULL OR event_type = ?)
+                WHERE (CAST(? AS text) IS NULL OR actor_external_user_id = ?)
+                  AND (CAST(? AS text) IS NULL OR event_type = ?)
                 ORDER BY event_timestamp DESC
                 """, this::map, userId, userId, eventType, eventType);
     }

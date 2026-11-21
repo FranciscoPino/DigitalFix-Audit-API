@@ -27,6 +27,8 @@ Workorders publica el mensaje JSON con `eventId` como clave Kafka y el contrato 
 
 Los campos corresponden a `event_id`, `event_type`, `aggregate_type`, `aggregate_id`, `created_at` y `payload` de la outbox. Mantén el mismo `eventId` al reintentar; `payload.changedBy`, cuando existe, se registra como actor.
 
+El consumidor acepta `schemaVersion: 1` y eventos anteriores sin versión. Valida el estado y su correspondencia con el tipo; si `payload.workOrderId` está presente debe coincidir con `aggregateId`. Los mensajes inválidos siguen la política de reintentos y DLT.
+
 El consumidor confirma el offset tras procesar cada registro; después de tres reintentos de 5 segundos envía fallos a su DLT. Si falla esa publicación, no se confirma el registro. `earliest` se aplica a grupos nuevos; no reinicia offsets existentes.
 
 Limitación de identidad: el código existente de workorders asigna `changedBy` al identificador del cliente, no necesariamente al usuario autenticado que cambió el estado. Tampoco captura rol ni IP de origen; por ello esos datos no constituyen una auditoría de identidad verificable.
